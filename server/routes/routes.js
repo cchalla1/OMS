@@ -30,7 +30,7 @@ const auth = {
 
 router.post('/register', auth.optional, (req, res, next) => {
   const { body: { profile } } = req;
-
+  console.log("register", profile);
   if(!profile.email) {
     return res.status(422).json({
       errors: {
@@ -50,9 +50,15 @@ router.post('/register', auth.optional, (req, res, next) => {
   const finalUser = new Profiles(profile);
 
   finalUser.setPassword(profile.password);
-
-  return finalUser.save()
-    .then(() => res.json({ user: finalUser.toAuthJSON() }));
+  console.log(finalUser);
+  finalUser.save(function(err) {
+    console.log("saving");
+    if (err) {
+      console.log(err);
+      res.send(err);
+    }
+    res.json({ user: finalUser.toAuthJSON() })
+  });
 });
 
 router.post('/login', auth.optional, (req, res, next) => {

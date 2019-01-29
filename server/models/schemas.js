@@ -44,7 +44,7 @@ profileSchema.methods.toAuthJSON = function() {
   return {
     _id: this.profile_id,
     email: this.email,
-    token: this.generateJWT(),
+    token: this.generateToken(),
   };
 };
 

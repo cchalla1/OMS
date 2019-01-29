@@ -5,7 +5,7 @@ const mongoose = require('mongoose');
 const session = require('express-session');
 const bodyParser = require('body-parser');
 
-var db = mongoose.createConnection('mongodb://localhost:27017/OMS');
+var db = mongoose.connect('mongodb://localhost:27017/OMS');
 require('./models/schemas.js');
 
 require('./config.js');
