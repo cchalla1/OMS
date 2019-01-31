@@ -4,6 +4,8 @@ const jwt = require('express-jwt');
 const mongoose = require('mongoose');
 const passport = require('passport');
 const Profiles = mongoose.model('Profiles');
+const Order = mongoose.model('Order');
+const CommerceItem = mongoose.model('CommerceItem');
 
 const getTokenFromHeaders = (req) => {
   const { headers: { authorization } } = req;
@@ -46,7 +48,8 @@ router.post('/register', auth.optional, (req, res, next) => {
       },
     });
   }
-
+  
+  profile.active = true;
   const finalUser = new Profiles(profile);
 
   finalUser.setPassword(profile.password);
@@ -110,7 +113,26 @@ router.get('/current', auth.required, (req, res, next) => {
     });
 });
 
-module.exports = router;
+router.post('/api/createOrder', auth.required, function(req, res) {
+  const {body : {order}} = req;
+  order.profile_id = req.payload.id;
+  Order.createOrder(order, res);
+});
+
+router.post('/api/products', function(req, res) {
+  const {body : {products}} = req;
+  CommerceItem.createCI(products, res);
+});
+
+router.get('/api/orders', auth.required, function(req, res) {
+  const {payload : {id}} = req;
+  Order.findAllByProfile(id, function(err, orders) {
+    if (err) {
+      res.send(err);
+    }
+    res.send(orders);
+  });
+});
 
 router.get('/', function(req, res, next){
   // res.render('index')

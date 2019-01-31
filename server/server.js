@@ -6,9 +6,10 @@ const session = require('express-session');
 const bodyParser = require('body-parser');
 
 var db = mongoose.connect('mongodb://localhost:27017/OMS');
-require('./models/schemas.js');
+require('./models/profileSchema.js');
 
 require('./config.js');
+require('./models');
 
 app.engine("html", require("ejs").__express);
 app.set('views', path.join(__dirname, '../client'));

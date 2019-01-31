@@ -5,7 +5,7 @@ const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
 
 const profileSchema = new Schema({
-    profile_id : Number,
+    _id : String,
     firstName : String,
     lastName : String,
     email : String,
@@ -31,18 +31,18 @@ profileSchema.methods.validateProfile = function(password) {
 profileSchema.methods.generateToken = function() {
   const today = new Date();
   const expirationDate = new Date(today);
-  expirationDate.setMinutes(today.getMinutes() + 5);
+  expirationDate.setMinutes(today.getMinutes() + 1);
 
   return jwt.sign({
     email: this.email,
-    id: this.profile_id,
+    id: this._id,
     exp: parseInt(expirationDate.getTime() / 1000, 10),
   }, 'secret');
-}
+};
 
 profileSchema.methods.toAuthJSON = function() {
   return {
-    _id: this.profile_id,
+    _id: this._id,
     email: this.email,
     token: this.generateToken(),
   };

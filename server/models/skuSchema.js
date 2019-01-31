@@ -1,14 +1,13 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const Product = mongoose.model('Product');
 
 const skuSchema = new Schema({
-    sku_id : String,
-    product_id : String,
+    _id : String,
+    product_id : {type : String, ref : Product},
     skuName : String,
     listPrice : String,
-    salePrice : String,
-    type : String,
-    images : String
+    salePrice : String
 });
 
-mongoose.model('Skus', skuSchema);
+mongoose.model('Sku', skuSchema);

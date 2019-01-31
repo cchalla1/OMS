@@ -10,4 +10,4 @@ const paymentSchema = new Schema({
     declineReasons : String
 });
 
-mongoose.model('Payments', paymentSchema);
+mongoose.model('Payment', paymentSchema);
