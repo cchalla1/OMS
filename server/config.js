@@ -8,12 +8,13 @@ passport.use(new LocalStrategy({
   usernameField: 'profile[email]',
   passwordField: 'profile[password]',
 }, (email, password, done) => {
-    Profiles.findOne({ email })
+  Profiles.findOne({email})
     .then((profile) => {
-      if(!profile || !profile.validateProfile(password)) {
-        return done(null, false, { errors: { 'email or password': 'is invalid' } });
+      if (!profile || !profile.validateProfile(password)) {
+        return done(null, false, {errors: {'email or password': 'is invalid'}});
       }
 
       return done(null, profile);
-    }).catch(done);
+    })
+    .catch(done);
 }));

@@ -32,7 +32,8 @@ module.exports = {
 
   // Support new ES6 global variables.
   env: {
-    es6: true
+    es6: true,
+    node: true
   },
 
   // Assume "console" is globally defined.
@@ -80,7 +81,7 @@ module.exports = {
 
     // Require non-constant variables, properties, and functions to be named
     // using camelCase.
-    camelcase: 'error',
+    // camelcase: 'error',
 
     // Disallow spaces before commas, and require spaces after commas.
     //   (foo, bar, baz)  not  (foo ,bar,baz)

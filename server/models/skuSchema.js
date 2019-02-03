@@ -1,13 +1,28 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const Product = mongoose.model('Product');
+const autoId = require('mongoose-better-id');
 
 const skuSchema = new Schema({
-    _id : String,
-    product_id : {type : String, ref : Product},
-    skuName : String,
-    listPrice : String,
-    salePrice : String
+  _id: String,
+  product_id: String,
+  skuName: String,
+  listPrice: String,
+  salePrice: String
+});
+
+skuSchema.plugin(autoId, {
+  connection: mongoose.connection,
+  field: '_id',
+  prefix: 'sku',
+  suffix: {
+    start: 0,
+    step: 1,
+    max: 99,
+  },
+  timestamp: {
+    enable: true,
+    format: '100'
+  }
 });
 
 mongoose.model('Sku', skuSchema);
