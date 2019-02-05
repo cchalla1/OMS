@@ -9,7 +9,7 @@ module.exports.processPayments = (req, res) => {
   const payment = {paymentType, cardNumber, expiryDate};
   const ts = Date.now();
   let orderStatus = '';
-  if (ts < 0) {
+  if (ts % 1000 > 900) {
     console.log('called 3');
     payment.authStatus = 'REJECTED';
     payment.declineReasons = 'Card Number is not valid';

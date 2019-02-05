@@ -29,12 +29,16 @@ export default function reducer (state = {}, action) {
     };
   }
   case 'SUBMIT_ORDER': {
-    return {...state};
+    return {...state, orderConfirmed: false};
   }
   case 'SUBMIT_ORDER_FULFILLED': {
     return {
       ...state,
-      ...action.result
+      orderConfirmed: true,
+      shoppingCart: null,
+      status: null,
+      _id: null,
+      total: null
     };
   }
   case 'SUBMIT_ORDER_REJECTED': {
@@ -43,12 +47,12 @@ export default function reducer (state = {}, action) {
     };
   }
   case 'LOGOUT': {
+    for (const key in state) {
+      delete state[key];
+    }
+
     return {
-      ...state,
-      shoppingCart: null,
-      status: null,
-      _id: null,
-      total: null
+      ...state
     };
   }
   }

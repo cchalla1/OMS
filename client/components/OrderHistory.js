@@ -7,7 +7,7 @@ import {getCurrentProfile} from '../store/actions/profileActions';
 import {getOrders} from '../store/actions/orderHistoryActions';
 
 const mapStateToProps = (state) => ({
-  orders: state.orderHistory[0],
+  orders: state.orderHistory,
   user: state.profile
 });
 
@@ -20,6 +20,21 @@ class OrderHistory extends Component {
       'ccExpiryYear': '',
       'ccCVV': '',
     };
+  }
+
+  prepareOrders () {
+    this.ordersArray = [];
+    this.childSkus = {};
+    for (const key in this.props.orders) {
+      const order = this.props.orders[key];
+      this.ordersArray.push(order);
+      // const skus = order.children;
+      // const skuArray = [];
+      // for (const childKey in skus) {
+      //   skuArray.push(skus[childKey]);
+      // }
+      // this.childSkus[product._id] = skuArray;
+    }
   }
 
   handleChange = event => {
@@ -50,6 +65,8 @@ class OrderHistory extends Component {
   // }
 
   render () {
+    this.prepareOrders();
+
     return (
       <Grid bsClass="container">
         <Header />
@@ -60,7 +77,7 @@ class OrderHistory extends Component {
                 Please <Link to="/">Login</Link> to view the contents of this page
               </center>
             </Jumbotron>
-            : this.props.orders && this.props.orders.length > 0
+            : this.ordersArray && this.ordersArray.length > 0
               ? <React.Fragment>
                 <h1> Order History </h1>
                 <Table responsive={'md'}>
@@ -73,7 +90,7 @@ class OrderHistory extends Component {
                   </thead>
                   <tbody>
                     {
-                      this.props.orders.map((item) => (
+                      this.ordersArray.map((item) => (
                         <tr key={item._id}>
                           <td>
                             <span>{item._id}</span>
@@ -95,7 +112,6 @@ class OrderHistory extends Component {
                 </Table></React.Fragment> : <Jumbotron style={{backgroundColor: 'white'}}>
                 <center>
                   <b>You did not place any order!!!</b>
-                  <Link to="/orderDetails/o10001">Details</Link>
                 </center>
               </Jumbotron>
         }

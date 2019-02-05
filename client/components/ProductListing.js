@@ -1,4 +1,4 @@
-import {Button, Col, Row} from 'react-bootstrap';
+import {Button, Col, Jumbotron, Row} from 'react-bootstrap';
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {createOrUpdateOrder} from '../store/actions/orderActions';
@@ -45,7 +45,7 @@ class ProductListing extends Component {
       items.push({
         product_id: product._id,
         sku_id: sku._id,
-        unit_price: sku.listPrice || product.listPrice,
+        unit_price: sku.salePrice || sku.listPrice,
         quantity: 1
       });
     }
@@ -80,7 +80,7 @@ class ProductListing extends Component {
                       </center>
                       <center>
                         <b>{product.productName}</b><br />
-                        <b>${sku.listPrice}</b><br />
+                        <b>${sku.salePrice}</b><br />
                         <Button onClick={this.addToCart.bind(this, product, sku)}
                           bsStyle="primary"
                           bsSize="small"
@@ -103,7 +103,11 @@ class ProductListing extends Component {
             ))
           }
         </Row>
-        : <div></div>
+        : <Jumbotron style={{backgroundColor: 'white'}}>
+          <center>
+            <b>There are no products defined!!!</b>
+          </center>
+        </Jumbotron>
     );
   }
 }

@@ -18,6 +18,7 @@ function buildOrder (order) {
     // console.log(orderDup.commerceItems[i]);
     const {_id, product, sku, quantity, price} = orderDup.commerceItems[i];
     product.child = sku;
+    delete product.children;
     product.commerceItem_id = _id;
     Object.assign(product, {quantity, price});
     processedOrder.shoppingCart.push(product);
@@ -25,16 +26,6 @@ function buildOrder (order) {
 
   return processedOrder;
 }
-
-// function buildOrders (orders) {
-//   const resultArray = [];
-//   for (const order of orders) {
-//     const processedOrder = buildOrder(order);
-//     resultArray.push(processedOrder);
-//   }
-
-//   return resultArray;
-// }
 
 module.exports.processOrder = (req, res) => {
   const order = req.body;
@@ -51,9 +42,6 @@ module.exports.processOrder = (req, res) => {
         const result = buildOrder(resOrder);
         res.json(result);
       });
-    //   console.log('resOrder', resOrder);
-    //   const result = buildOrder(resOrder);
-    //   res.json(result);
     });
   }
   else if (order.op === 'update') {
@@ -70,13 +58,21 @@ module.exports.processOrder = (req, res) => {
     const orderPayload = JSON.stringify(order);
     const headers = {
       'Accept': 'application/json',
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      'Authorization': req.headers.Authorization
     };
     console.log('called 1', orderPayload);
     fetch('http://localhost:9000/api/payments', {method: 'POST', body: orderPayload, headers})
       .then(response => response.json())
       .then(json => {
         const result = buildOrder(json);
+        if (json.status === 'confirmed') {
+          setTimeout(() => {
+            Order.updateStatus(json._id, 'delivered', function () {
+              console.log('Order', json._id, 'is delivered');
+            });
+          }, 15000);
+        }
         res.json(result);
       })
       .catch(err => res.status(500).send(err));

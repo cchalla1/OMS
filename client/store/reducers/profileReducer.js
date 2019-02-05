@@ -50,11 +50,12 @@ export default function reducer (state = {}, action) {
     };
   }
   case 'LOGOUT': {
+    for (const key in state) {
+      delete state[key];
+    }
+
     return {
-      ...state,
-      firstName: null,
-      lastName: null,
-      email: null
+      ...state
     };
   }
   }

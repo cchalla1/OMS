@@ -34,7 +34,7 @@ productSchema.virtual('children', {
 });
 
 productSchema.virtual('unit_price').get(function () {
-  return Math.min(this.listPrice, this.salePrice);
+  return this.salePrice ? this.salePrice : this.listPrice;
 });
 
 mongoose.model('Product', productSchema);

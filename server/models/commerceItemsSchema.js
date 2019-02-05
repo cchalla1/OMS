@@ -28,11 +28,14 @@ commerceItemsSchema.plugin(autoId, {
 });
 
 commerceItemsSchema.statics.createCI = function (product) {
+  console.log(product);
+  const price = product.child && product.child.unit_price
+    ? product.quantity * product.child.unit_price : product.quantity * product.unit_price;
   const ci = new this({
     product: product.product_id,
     sku: product.sku_id,
     quantity: product.quantity,
-    price: product.quantity * product.unit_price
+    price
   });
   const query = ci.save();
 
@@ -40,25 +43,13 @@ commerceItemsSchema.statics.createCI = function (product) {
 };
 
 commerceItemsSchema.statics.updateCI = function (product) {
+  const price = product.child && product.child.unit_price
+    ? product.quantity * product.child.unit_price : product.quantity * product.unit_price;
   const query = this.findOneAndUpdate({_id: product.commerceItem_id}, {$set: {quantity: product.quantity,
-    price: product.quantity * product.unit_price}
+    price}
   }, {new: true});
 
   return query.exec();
 };
-
-// commerceItemsSchema.virtual('product', {
-//     ref: 'Product',
-//     localField: 'product_id',
-//     foreignField: 'product_id',
-//     justOne: true
-// });
-
-// commerceItemsSchema.virtual('sku', {
-//     ref: 'Sku',
-//     localField: 'sku_id',
-//     foreignField: 'sku_id',
-//     justOne: true
-// });
 
 mongoose.model('CommerceItem', commerceItemsSchema);

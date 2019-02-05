@@ -66,7 +66,7 @@ class Checkout extends Component {
                 Please <Link to="/">Login</Link> to view the contents of this page
               </center>
             </Jumbotron>
-            : this.props.order && this.props.order.shoppingCart && this.props.order.shoppingCart.length > 0
+            : !this.props.order.orderConfirmed ? this.props.order && this.props.order.shoppingCart && this.props.order.shoppingCart.length > 0
               ? <React.Fragment>
                 <h1> Your Cart </h1>
                 <Table responsive={'md'}>
@@ -96,75 +96,82 @@ class Checkout extends Component {
                       ))
                     }
                   </tbody>
-                </Table></React.Fragment> : <Jumbotron style={{backgroundColor: 'white'}}>
+                </Table>
+                <h1> Payment </h1>
+                <form>
+                  <Row>
+                    <Col md={3}>
+                      <FormGroup controlId="ccNumber">
+                        <FormControl
+                          autoFocus
+                          type="text"
+                          placeholder="Credit Card Number"
+                          value={this.state.ccNumber}
+                          onChange={this.handleChange}
+                        />
+                      </FormGroup>
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col md={3}>
+                      <FormGroup controlId="ccExpiryMonth">
+                        <FormControl
+                          value={this.state.ccExpiryMonth}
+                          size="2"
+                          placeholder="Expiry Month"
+                          onChange={this.handleChange}
+                          type="text"
+                        />
+                      </FormGroup>
+                    </Col>
+                    <Col md={3}>
+                      <FormGroup controlId="ccExpiryYear">
+                        <FormControl
+                          value={this.state.ccExpiryYear}
+                          size="4"
+                          placeholder="Expiry Year"
+                          onChange={this.handleChange}
+                          type="text"
+                        />
+                      </FormGroup>
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col md={3}>
+                      <FormGroup controlId="ccCVV">
+                        <FormControl
+                          value={this.state.ccCVV}
+                          placeholder="CVV"
+                          size="3"
+                          onChange={this.handleChange}
+                          type="text"
+                        />
+                      </FormGroup>
+                    </Col>
+                  </Row>
+                </form>
+                <Button
+                  bsStyle="primary"
+                  bsSize="large"
+                  disabled={!this.validateForm()}
+                  onClick={this.placeOrder.bind(this)}
+                >
+                  Place Order
+                </Button>
+              </React.Fragment> : <Jumbotron style={{backgroundColor: 'white'}}>
                 <center>
                   <b>Empty Cart</b>
                 </center>
               </Jumbotron>
+
+              : <div className="static-modal">
+                <Jumbotron style={{backgroundColor: 'white'}}>
+                  <center>
+                    <b>Your Order is confirmed</b>
+                  </center>
+                </Jumbotron>
+              </div>
         }
-        <React.Fragment>
-          <h1> Payment </h1>
-          <form>
-            <Row>
-              <Col md={3}>
-                <FormGroup controlId="ccNumber">
-                  <FormControl
-                    autoFocus
-                    type="text"
-                    placeholder="Credit Card Number"
-                    value={this.state.ccNumber}
-                    onChange={this.handleChange}
-                  />
-                </FormGroup>
-              </Col>
-            </Row>
-            <Row>
-              <Col md={3}>
-                <FormGroup controlId="ccExpiryMonth">
-                  <FormControl
-                    value={this.state.ccExpiryMonth}
-                    size="2"
-                    placeholder="Expiry Month"
-                    onChange={this.handleChange}
-                    type="text"
-                  />
-                </FormGroup>
-              </Col>
-              <Col md={3}>
-                <FormGroup controlId="ccExpiryYear">
-                  <FormControl
-                    value={this.state.ccExpiryYear}
-                    size="4"
-                    placeholder="Expiry Year"
-                    onChange={this.handleChange}
-                    type="text"
-                  />
-                </FormGroup>
-              </Col>
-            </Row>
-            <Row>
-              <Col md={3}>
-                <FormGroup controlId="ccCVV">
-                  <FormControl
-                    value={this.state.ccCVV}
-                    placeholder="CVV"
-                    size="3"
-                    onChange={this.handleChange}
-                    type="text"
-                  />
-                </FormGroup>
-              </Col>
-            </Row>
-          </form>
-        </React.Fragment>
-        <Button
-          bsStyle="primary"
-          bsSize="large"
-          disabled={!this.validateForm()}
-          onClick={this.placeOrder.bind(this)}
-        >
-            Place Order
-        </Button>
       </Grid>
     );
   }

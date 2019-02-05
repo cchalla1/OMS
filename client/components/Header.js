@@ -1,11 +1,12 @@
-import {Button, Jumbotron} from 'react-bootstrap';
+import {Badge, Jumbotron} from 'react-bootstrap';
 import React, {Component} from 'react';
 import {Link} from 'react-router-dom';
 import {connect} from 'react-redux';
 import {logout} from '../store/actions/profileActions';
 
 const mapStateToProps = (state) => ({
-  user: state.profile
+  user: state.profile,
+  noOfItems: state.order && state.order.shoppingCart ? state.order.shoppingCart.length : 0
 });
 
 class Header extends Component {
@@ -20,6 +21,9 @@ class Header extends Component {
         <center>
           <b>Order Management System</b>
         </center>
+        <center>
+          <Link to="/">Home</Link>
+        </center>
         {
           this.props.user && this.props.user.email &&
           <React.Fragment>
@@ -27,7 +31,8 @@ class Header extends Component {
               <b>Logged in as - {this.props.user.firstName} {this.props.user.lastName}</b>
             </center>
             <center>
-              <Button onClick={this.logout.bind(this)}>Logout</Button> <Link to="/checkout">Checkout</Link>
+              <Link to="/" onClick={this.logout.bind(this)}>Logout</Link> {' '}
+              <Link to="/checkout">Checkout <Badge>{this.props.noOfItems}</Badge></Link> {' '} <Link to="/orderHistory">Order History</Link>
             </center>
           </React.Fragment>
         }

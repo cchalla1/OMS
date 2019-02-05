@@ -1,4 +1,4 @@
-import {Card, Grid, Jumbotron, Table} from 'react-bootstrap';
+import {Grid, Jumbotron, Table} from 'react-bootstrap';
 import React, {Component} from 'react';
 import Header from './Header';
 import {Link} from 'react-router-dom';
@@ -31,6 +31,8 @@ class OrderDetails extends Component {
             : this.props.orderDetail && this.props.orderDetail._id
               ? <React.Fragment>
                 <h1> Order Details </h1>
+                <h3>Order: {this.props.orderDetail._id}</h3>
+                <h5>{this.props.orderDetail.status}</h5>
                 <Table responsive={'md'}>
                   <thead>
                     <tr>
@@ -59,17 +61,19 @@ class OrderDetails extends Component {
                     }
                   </tbody>
                 </Table>
-                <Card style={{width: '18rem'}}>
-                  <Card.Body>
-                    <Card.Title>Payment</Card.Title>
-                    <Card.Text>
-                      <span>{this.props.orderDetail.payments.paymentType}</span>
-                      <span>{this.props.orderDetail.payments.cardNumber}</span>
-                      <span>{this.props.orderDetail.payments.authStatus}</span>
-                      <span>{this.props.orderDetail.payments.declineReasons}</span>
-                    </Card.Text>
-                  </Card.Body>
-                </Card>;
+                <div>
+                  <div>
+                    <h3>Payment Method</h3>
+                    <div>
+                      <div><b>Payment Type:</b> {this.props.orderDetail.payments.paymentType}</div>
+                      <div><b>Card Number:</b> {this.props.orderDetail.payments.cardNumber}</div>
+                      <div><b>Auth Status:</b> {this.props.orderDetail.payments.authStatus}</div>
+                      <div>{this.props.orderDetail.payments.declineReasons
+                        ? <span><b>Decline Reasons:</b> this.props.orderDetail.payments.declineReasons</span> : <span></span>
+                      }</div>
+                    </div>
+                  </div>
+                </div>
               </React.Fragment> : <Jumbotron style={{backgroundColor: 'white'}}>
                 <center>
                   <b>You did not place this order!!!</b>

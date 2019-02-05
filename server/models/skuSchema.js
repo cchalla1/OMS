@@ -8,7 +8,7 @@ const skuSchema = new Schema({
   skuName: String,
   listPrice: Number,
   salePrice: Number
-});
+}, {toObject: {virtuals: true}, toJSON: {virtuals: true}});
 
 skuSchema.plugin(autoId, {
   connection: mongoose.connection,
@@ -26,7 +26,7 @@ skuSchema.plugin(autoId, {
 });
 
 skuSchema.virtual('unit_price').get(function () {
-  return Math.min(this.listPrice, this.salePrice);
+  return this.salePrice ? this.salePrice : this.listPrice;
 });
 
 mongoose.model('Sku', skuSchema);

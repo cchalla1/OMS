@@ -14,15 +14,15 @@ export default function reducer (state = {}, action) {
       ...state
     };
   }
-//   case 'LOGOUT': {
-//     return {
-//       ...state,
-//       shoppingCart: null,
-//       status: null,
-//       _id: null,
-//       total: null
-//     };
-//   }
+  case 'LOGOUT': {
+    for (const key in state) {
+      delete state[key];
+    }
+
+    return {
+      ...state
+    };
+  }
   }
 
   return state;
