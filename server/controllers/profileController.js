@@ -84,6 +84,7 @@ module.exports.login = (req, res, next) => {
     if (err) {
       return res.status(401).send(err);
     }
+    console.log(passportUser);
 
     if (passportUser) {
       const user = passportUser;
@@ -96,7 +97,17 @@ module.exports.login = (req, res, next) => {
   })(req, res, next);
 };
 
-// GET current route (required, only authenticated users have access)
+module.exports.logout = (req, res) => {
+  req.session.destroy(function (err) {
+    console.log(req.payload.id);
+    req.logout();
+    if (err) {
+      res.status(500).send(err);
+    }
+    res.json({message: 'User logged out', success: 'true'});
+  });
+};
+
 module.exports.getCurrentProfile = (req, res) => {
   const {payload: {id}} = req;
 

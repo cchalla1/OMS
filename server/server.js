@@ -1,7 +1,8 @@
 require('dotenv').config();
 const express = require('express');
 const path = require('path');
-const app = express();
+const orderApp = express();
+const paymentsApp = express();
 const mongoose = require('mongoose');
 const session = require('express-session');
 const bodyParser = require('body-parser');
@@ -12,16 +13,19 @@ require('./models/profileSchema.js');
 require('./config.js');
 require('./models');
 
-app.engine('html', require('ejs').renderFile);
-app.set('view engine', 'html');
-app.set('views', path.join(__dirname, '../client'));
-app.use(express.static(path.join(__dirname, '../client')));
-app.use(bodyParser.json());
-app.use(session({secret: 'oms-project', cookie: {maxAge: 60000}, resave: false, saveUninitialized: false}));
+orderApp.engine('html', require('ejs').renderFile);
+orderApp.set('view engine', 'html');
+orderApp.set('views', path.join(__dirname, '../client'));
+orderApp.use(express.static(path.join(__dirname, '../client')));
+orderApp.use(bodyParser.json());
+orderApp.use(session({secret: 'oms-project', cookie: {maxAge: 60000}, resave: false, saveUninitialized: false}));
 
-const router = require('./routes/routes.js');
+paymentsApp.use(bodyParser.json());
 
-app.get('/*', function (req, res, next) {
+const orderRouter = require('./routes/orderRoutes.js');
+const paymentRouter = require('./routes/paymentRoutes.js');
+
+orderApp.get('/*', function (req, res, next) {
   if (req.url.indexOf('api') === -1) {
     res.render('index');
   }
@@ -30,18 +34,33 @@ app.get('/*', function (req, res, next) {
   }
 });
 
-app.use('/api', router);
+paymentsApp.get('/*', function (req, res, next) {
+  if (req.url.indexOf('api') === -1) {
+    res.render('index');
+  }
+  else {
+    next();
+  }
+});
 
-app.use(function (err, req, res, next) {
+orderApp.use('/api', orderRouter);
+paymentsApp.use('/api', paymentRouter);
+
+orderApp.use(function (err, req, res, next) {
   if (err.name === 'UnauthorizedError') {
     res.status(err.status).send({message: 'Unauthorized'});
   }
   next();
 });
 
-const port = process.env.PORT || 5000;
-app.listen(port, () => {
-  console.log('running at localhost: ' + port);
+const orderPort = process.env.ORDER_PORT || 5000;
+orderApp.listen(orderPort, () => {
+  console.log('running at localhost: ' + orderPort);
 });
 
-module.exports = app;
+const paymentPort = process.env.PAYMENT_PORT || 6000;
+paymentsApp.listen(paymentPort, () => {
+  console.log('running at localhost: ' + paymentPort);
+});
+
+module.exports = orderApp;

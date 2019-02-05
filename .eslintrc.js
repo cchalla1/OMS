@@ -171,7 +171,7 @@ module.exports = {
 
     // Disallow nested ternary expressions, such as:
     //   let foo = bar ? baz : qux === quxx ? bing : bam;
-    'no-nested-ternary': 'error',
+    // 'no-nested-ternary': 'error',
 
     // Disallow invoking "new" without assigning the result to anything.
     'no-new': 'error',

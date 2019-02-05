@@ -2,10 +2,11 @@ import {Grid, Tab, Tabs} from 'react-bootstrap';
 import React, {Component} from 'react';
 import Header from './Header';
 import Login from './Login';
-import PDP from './PDP';
+import ProductListing from './ProductListing';
 import Register from './Register';
 import {connect} from 'react-redux';
 import {getCurrentOrder} from '../store/actions/orderActions';
+import {getCurrentProfile} from '../store/actions/profileActions';
 
 const mapStateToProps = (state) => ({
   user: state.profile
@@ -21,7 +22,8 @@ class Home extends Component {
   }
 
   componentDidMount () {
-    this.props.getCurrentOrder();
+    // this.props.getCurrentOrder();
+    this.props.getCurrentProfile();
   }
 
   handleChange = () => {
@@ -39,7 +41,7 @@ class Home extends Component {
       <Grid bsClass="container">
         <Header />
         {
-          this.props.user && this.props.user.email ? <PDP />
+          this.props.user && this.props.user.email ? <ProductListing />
             : <Tabs defaultActiveKey="login" id="uncontrolled-tab-example">
               <Tab eventKey="login" title="Login">
                 <Login />
@@ -54,4 +56,4 @@ class Home extends Component {
   }
 }
 
-export default connect(mapStateToProps, {getCurrentOrder})(Home);
+export default connect(mapStateToProps, {getCurrentOrder, getCurrentProfile})(Home);

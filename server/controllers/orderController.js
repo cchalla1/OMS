@@ -2,9 +2,10 @@ const mongoose = require('mongoose');
 const Order = mongoose.model('Order');
 const Product = mongoose.model('Product');
 const Sku = mongoose.model('Sku');
+const fetch = require('node-fetch');
 
 function buildOrder (order) {
-  const orderDup = order.toObject();
+  const orderDup = JSON.parse(JSON.stringify(order));
   const {_id, payments, status, total} = orderDup;
   const processedOrder = {
     _id,
@@ -14,6 +15,7 @@ function buildOrder (order) {
   };
   processedOrder.shoppingCart = [];
   for (let i = 0; i < orderDup.commerceItems.length; i++) {
+    // console.log(orderDup.commerceItems[i]);
     const {_id, product, sku, quantity, price} = orderDup.commerceItems[i];
     product.child = sku;
     product.commerceItem_id = _id;
@@ -24,18 +26,18 @@ function buildOrder (order) {
   return processedOrder;
 }
 
-function buildOrders (orders) {
-  const resultArray = [];
-  for (const order of orders) {
-    const processedOrder = buildOrder(order);
-    resultArray.push(processedOrder);
-  }
+// function buildOrders (orders) {
+//   const resultArray = [];
+//   for (const order of orders) {
+//     const processedOrder = buildOrder(order);
+//     resultArray.push(processedOrder);
+//   }
 
-  return resultArray;
-}
+//   return resultArray;
+// }
 
 module.exports.processOrder = (req, res) => {
-  const {body: {order}} = req;
+  const order = req.body;
   order.profile_id = req.payload.id;
   if (order.op === 'create') {
     Order.createOrder(order, function (err) {
@@ -59,9 +61,25 @@ module.exports.processOrder = (req, res) => {
       if (err) {
         res.sendStatus(400).send(err);
       }
+      console.log(resOrder);
       const result = buildOrder(resOrder);
       res.json(result);
     });
+  }
+  else if (order.op === 'complete') {
+    const orderPayload = JSON.stringify(order);
+    const headers = {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    };
+    console.log('called 1', orderPayload);
+    fetch('http://localhost:9000/api/payments', {method: 'POST', body: orderPayload, headers})
+      .then(response => response.json())
+      .then(json => {
+        const result = buildOrder(json);
+        res.json(result);
+      })
+      .catch(err => res.status(500).send(err));
   }
 };
 
@@ -97,6 +115,16 @@ module.exports.listOrders = (req, res) => {
     if (err) {
       res.send(err);
     }
-    res.send(buildOrders(orders));
+    res.json(orders);
+  });
+};
+
+module.exports.getOrder = (req, res) => {
+  const {params: {orderId}} = req;
+  Order.findOrder(orderId, function (err, order) {
+    if (err) {
+      res.status(500).send(err);
+    }
+    res.json(order);
   });
 };

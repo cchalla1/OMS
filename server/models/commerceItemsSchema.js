@@ -9,7 +9,7 @@ const commerceItemsSchema = new Schema({
   product: {type: String, ref: Product},
   sku: {type: String, ref: Sku},
   quantity: Number,
-  price: String
+  price: Number
 });
 
 commerceItemsSchema.plugin(autoId, {
@@ -32,7 +32,7 @@ commerceItemsSchema.statics.createCI = function (product) {
     product: product.product_id,
     sku: product.sku_id,
     quantity: product.quantity,
-    price: product.price
+    price: product.quantity * product.unit_price
   });
   const query = ci.save();
 
@@ -40,7 +40,9 @@ commerceItemsSchema.statics.createCI = function (product) {
 };
 
 commerceItemsSchema.statics.updateCI = function (product) {
-  const query = this.update({_id: product.commerceItem_id}, {$set: {quantity: product.quantity}});
+  const query = this.findOneAndUpdate({_id: product.commerceItem_id}, {$set: {quantity: product.quantity,
+    price: product.quantity * product.unit_price}
+  }, {new: true});
 
   return query.exec();
 };

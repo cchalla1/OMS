@@ -11,6 +11,25 @@ export default function reducer (state = {}, action) {
       email: action.result.email
     };
   }
+  case 'GET_PROFILE': {
+    return {...state};
+  }
+  case 'GET_PROFILE_FULFILLED': {
+    return {
+      ...state,
+      firstName: action.result.firstName,
+      lastName: action.result.lastName,
+      email: action.result.email
+    };
+  }
+  case 'GET_PROFILE_REJECTED': {
+    return {
+      ...state,
+      firstName: null,
+      lastName: null,
+      email: null
+    };
+  }
   case 'LOGIN': {
     return {...state};
   }
@@ -22,8 +41,17 @@ export default function reducer (state = {}, action) {
       email: action.result.email
     };
   }
-  case 'PROFILE_EXPIRED': {
+  case 'LOGIN_REJECTED': {
     return {
+      ...state,
+      firstName: null,
+      lastName: null,
+      email: null
+    };
+  }
+  case 'LOGOUT': {
+    return {
+      ...state,
       firstName: null,
       lastName: null,
       email: null

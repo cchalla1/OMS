@@ -6,8 +6,8 @@ const skuSchema = new Schema({
   _id: String,
   product_id: String,
   skuName: String,
-  listPrice: String,
-  salePrice: String
+  listPrice: Number,
+  salePrice: Number
 });
 
 skuSchema.plugin(autoId, {
@@ -23,6 +23,10 @@ skuSchema.plugin(autoId, {
     enable: true,
     format: '100'
   }
+});
+
+skuSchema.virtual('unit_price').get(function () {
+  return Math.min(this.listPrice, this.salePrice);
 });
 
 mongoose.model('Sku', skuSchema);

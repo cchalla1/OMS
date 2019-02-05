@@ -12,7 +12,7 @@ const orderSchema = new Schema({
   payments: {type: String, ref: Payment},
   commerceItems: [{type: String, ref: CommerceItem}],
   status: String,
-  total: String,
+  total: Number,
   creationDate: {type: Date, default: Date.now}
 });
 
@@ -32,6 +32,19 @@ orderSchema.plugin(autoId, {
 });
 
 orderSchema.statics.findAllByProfile = function (profile_id, callback) {
+  // const populateQuery = [
+  //   {path: 'payments'},
+  //   {path: 'commerceItems', model: CommerceItem, populate: [
+  //     {path: 'product', model: Product},
+  //     {path: 'sku', model: Sku}
+  //   ]}
+  // ];
+
+  return this.find({profile_id, status: {$ne: 'created'}})
+    .exec(callback);
+};
+
+orderSchema.statics.findOrder = function (orderId, callback) {
   const populateQuery = [
     {path: 'payments'},
     {path: 'commerceItems', model: CommerceItem, populate: [
@@ -40,7 +53,7 @@ orderSchema.statics.findAllByProfile = function (profile_id, callback) {
     ]}
   ];
 
-  return this.find({profile_id})
+  return this.findOne({orderId})
     .populate(populateQuery)
     .exec(callback);
 };
@@ -89,6 +102,13 @@ orderSchema.statics.createOrder = function (order, callback) {
 
 orderSchema.statics.updateOrder = function (order, callback) {
   const promises = [];
+  const populateQuery = [
+    {path: 'payments'},
+    {path: 'commerceItems', model: CommerceItem, populate: [
+      {path: 'product', model: Product},
+      {path: 'sku', model: Sku}
+    ]}
+  ];
   for (const product of order.shoppingCart) {
     if (product.commerceItem_id) {
       promises.push(CommerceItem.updateCI(product));
@@ -99,13 +119,31 @@ orderSchema.statics.updateOrder = function (order, callback) {
   }
   Promise.all(promises).then((values) => {
     const commerceItem_ids = [];
+    let totalPrice = 0;
     for (const value of values) {
       commerceItem_ids.push(value._id);
+      totalPrice += value.price;
     }
 
-    return this.update({_id: order._id}, {$set: {commerceItems: commerceItem_ids}})
+    return this.findOneAndUpdate({_id: order._id}, {$set: {commerceItems: commerceItem_ids, total: totalPrice}}, {new: true})
+      .populate(populateQuery)
       .exec(callback);
   });
+};
+
+orderSchema.statics.updatePaymentGroup = function (orderId, payment, status, callback) {
+  console.log('called 7');
+  const populateQuery = [
+    {path: 'payments'},
+    {path: 'commerceItems', model: CommerceItem, populate: [
+      {path: 'product', model: Product},
+      {path: 'sku', model: Sku}
+    ]}
+  ];
+
+  return this.findOneAndUpdate({_id: orderId}, {$set: {payments: payment._id, status}}, {new: true})
+    .populate(populateQuery)
+    .exec(callback);
 };
 
 // orderSchema.virtual('payments', {

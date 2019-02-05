@@ -7,6 +7,8 @@ router.post('/register', profileController.auth.optional, profileController.regi
 
 router.post('/login', profileController.auth.optional, profileController.login);
 
+router.get('/logout', profileController.auth.required, profileController.logout);
+
 router.get('/profile/current', profileController.auth.required, profileController.getCurrentProfile);
 
 router.post('/order/current', profileController.auth.required, orderController.processOrder);
@@ -16,5 +18,7 @@ router.get('/order/current', profileController.auth.required, orderController.ge
 router.get('/listProducts', orderController.listProducts);
 
 router.get('/orders', profileController.auth.required, orderController.listOrders);
+
+router.get('/orders/:orderId', profileController.auth.required, orderController.getOrder);
 
 module.exports = router;

@@ -1,29 +1,46 @@
 import {makeApiCall} from '../../wapi/api';
 
-export function getCurrentOrder () {
+export function submitOrder (order) {
 
   return function (dispatch) {
-    dispatch({type: 'GET_CURRENT_ORDER'});
-    fetch(makeApiCall().getRequest(null, {url: '/api/order/current', method: 'GET'}))
+    dispatch({type: 'SUBMIT_ORDER'});
+    fetch(makeApiCall().getRequest(order, {url: '/api/order/current', method: 'POST'}))
       .then((response) => {
         if (response.ok) {
-          // dispatch({type: 'REGISTER_PROFILE_FULFILLED', result: JSON.parse(window.localStorage.getItem('currentUser'))});
-          response.json().then(() => {
-            dispatch({type: 'GET_CURRENT_ORDER_FULFILLED', result: {}});
+          response.json().then((data) => {
+            dispatch({type: 'SUBMIT_ORDER_FULFILLED', result: data});
           });
         }
         else {
-          // Remove the token and dispatch an action
-          window.localStorage.removeItem('BearerToken');
-          dispatch({type: 'GET_CURRENT_ORDER_REJECTED', result: null});
-          dispatch({type: 'PROFILE_EXPIRED', result: null});
+          dispatch({type: 'SUBMIT_ORDER_REJECTED', result: null});
+          // dispatch({type: 'PROFILE_EXPIRED', result: null});
         }
       })
       .catch(() => {
-        // Remove the token and dispatch an action
-        window.localStorage.removeItem('BearerToken');
-        dispatch({type: 'GET_CURRENT_ORDER_REJECTED', result: null});
-        dispatch({type: 'PROFILE_EXPIRED', result: null});
+        dispatch({type: 'SUBMIT_ORDER_REJECTED', result: null});
+        // dispatch({type: 'PROFILE_EXPIRED', result: null});
+      });
+  };
+
+}
+
+export function createOrUpdateOrder (order) {
+
+  return function (dispatch) {
+    dispatch({type: 'CREATE_OR_UPDATE_ORDER'});
+    fetch(makeApiCall().getRequest(order, {url: '/api/order/current', method: 'POST'}))
+      .then((response) => {
+        if (response.ok) {
+          response.json().then((data) => {
+            dispatch({type: 'CREATE_OR_UPDATE_ORDER_FULFILLED', result: data});
+          });
+        }
+        else {
+          dispatch({type: 'CREATE_OR_UPDATE_ORDER_REJECTED', result: null});
+        }
+      })
+      .catch(() => {
+        dispatch({type: 'CREATE_OR_UPDATE_ORDER_REJECTED', result: null});
       });
   };
 

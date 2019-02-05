@@ -5,8 +5,8 @@ const autoId = require('mongoose-better-id');
 const productSchema = new Schema({
   _id: String,
   productName: String,
-  listPrice: String,
-  salePrice: String,
+  listPrice: Number,
+  salePrice: Number,
   type: String,
   images: String
 }, {toObject: {virtuals: true}, toJSON: {virtuals: true}});
@@ -31,6 +31,10 @@ productSchema.virtual('children', {
   localField: '_id',
   foreignField: 'product_id',
   justOne: false
+});
+
+productSchema.virtual('unit_price').get(function () {
+  return Math.min(this.listPrice, this.salePrice);
 });
 
 mongoose.model('Product', productSchema);
