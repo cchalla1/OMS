@@ -59,9 +59,9 @@ module.exports.processOrder = (req, res) => {
     const headers = {
       'Accept': 'application/json',
       'Content-Type': 'application/json',
-      'Authorization': req.headers.Authorization
+      'Authorization': req.headers.authorization
     };
-    console.log('called 1', orderPayload);
+    // console.log('called 1', req.headers);
     fetch('http://localhost:9000/api/payments', {method: 'POST', body: orderPayload, headers})
       .then(response => response.json())
       .then(json => {

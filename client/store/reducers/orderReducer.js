@@ -1,12 +1,13 @@
 export default function reducer (state = {}, action) {
   switch (action.type) {
   case 'GET_CURRENT_ORDER': {
-    return {...state};
+    return {...state, orderConfirmed: false};
   }
   case 'GET_CURRENT_ORDER_FULFILLED': {
     return {
       ...state,
-      ...action.result
+      ...action.result,
+      orderConfirmed: false
     };
   }
   case 'GET_CURRENT_ORDER_REJECTED': {
@@ -15,12 +16,13 @@ export default function reducer (state = {}, action) {
     };
   }
   case 'CREATE_OR_UPDATE_ORDER': {
-    return {...state};
+    return {...state, orderConfirmed: false};
   }
   case 'CREATE_OR_UPDATE_ORDER_FULFILLED': {
     return {
       ...state,
-      ...action.result
+      ...action.result,
+      orderConfirmed: false
     };
   }
   case 'CREATE_OR_UPDATE_ORDER_REJECTED': {
