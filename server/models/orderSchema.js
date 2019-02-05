@@ -53,7 +53,7 @@ orderSchema.statics.findOrder = function (orderId, callback) {
     ]}
   ];
 
-  return this.findOne({orderId})
+  return this.findOne({_id: orderId})
     .populate(populateQuery)
     .exec(callback);
 };

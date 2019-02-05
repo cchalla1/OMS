@@ -95,6 +95,7 @@ class OrderHistory extends Component {
                 </Table></React.Fragment> : <Jumbotron style={{backgroundColor: 'white'}}>
                 <center>
                   <b>You did not place any order!!!</b>
+                  <Link to="/orderDetails/o10001">Details</Link>
                 </center>
               </Jumbotron>
         }

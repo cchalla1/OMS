@@ -14,10 +14,10 @@ ReactDOM.render(<Provider store={store}>
     <Switch>
       <Route path = '/orderHistory' component = {OrderHistory}/>
       <Route path = '/checkout' component = {Checkout}/>
-      <Route path = '/orderDetails/:orderId' render={(props) => {
+      <Route path = '/orderDetails/:orderId' render={(props) =>
         <OrderDetails {...props}
-          id={props.match.params.orderId}/>;
-      }}/>
+          id={props.match.params.orderId}/>
+      }/>
       <Route path='/' component={Home}/>
     </Switch>
   </BrowserRouter>

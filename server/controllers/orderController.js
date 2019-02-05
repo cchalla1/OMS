@@ -121,10 +121,11 @@ module.exports.listOrders = (req, res) => {
 
 module.exports.getOrder = (req, res) => {
   const {params: {orderId}} = req;
+  console.log(req.params);
   Order.findOrder(orderId, function (err, order) {
     if (err) {
       res.status(500).send(err);
     }
-    res.json(order);
+    res.json(buildOrder(order));
   });
 };
